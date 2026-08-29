@@ -1,487 +1,318 @@
-# Index.-html-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0,
-      maximum-scale=1.0, user-scalable=no">
-
-<title>Runner Dash</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>3D Runner</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    touch-action: none;
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;background:#87ceeb;font-family:Arial}
+#game{width:100vw;height:100vh;position:relative}
+#score{
+ position:absolute;top:15px;left:15px;z-index:10;
+ color:white;font-size:22px;font-weight:bold;
+ text-shadow:2px 2px 3px #000
 }
-
-body {
-    margin: 0;
-    overflow: hidden;
-    background: #111;
-    font-family: Arial, sans-serif;
+#buttons{
+ position:absolute;bottom:20px;width:100%;z-index:10;
+ display:flex;justify-content:center;gap:12px
 }
-
-#game {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(
-        #6ec6ff 0%,
-        #dff6ff 42%,
-        #55a630 42%,
-        #55a630 100%
-    );
+button{
+ width:70px;height:60px;border:0;border-radius:15px;
+ font-size:25px;background:rgba(255,255,255,.85)
 }
-
-/* Road */
-#road {
-    position: absolute;
-    left: 8%;
-    width: 84%;
-    height: 100%;
-    background: #444;
-    transform: perspective(500px);
+#start{
+ position:absolute;inset:0;z-index:20;
+ background:rgba(0,0,0,.65);color:white;
+ display:flex;flex-direction:column;
+ justify-content:center;align-items:center
 }
-
-/* Lane lines */
-.laneLine {
-    position: absolute;
-    width: 5px;
-    height: 100%;
-    background: repeating-linear-gradient(
-        to bottom,
-        white 0px,
-        white 60px,
-        transparent 60px,
-        transparent 120px
-    );
-    opacity: .8;
-}
-
-.line1 {
-    left: 33.33%;
-}
-
-.line2 {
-    left: 66.66%;
-}
-
-/* Player */
-#player {
-    position: absolute;
-    bottom: 100px;
-    left: 50%;
-    width: 48px;
-    height: 70px;
-    transform: translateX(-50%);
-    background: #ff3344;
-    border-radius: 20px 20px 12px 12px;
-    z-index: 10;
-    transition: left .15s;
-}
-
-#player::before {
-    content: "";
-    position: absolute;
-    width: 32px;
-    height: 32px;
-    background: #ffd1a9;
-    border-radius: 50%;
-    top: -25px;
-    left: 8px;
-}
-
-#player::after {
-    content: "";
-    position: absolute;
-    width: 8px;
-    height: 35px;
-    background: #222;
-    left: 20px;
-    bottom: -25px;
-}
-
-/* Coin */
-.coin {
-    position: absolute;
-    width: 28px;
-    height: 28px;
-    background: gold;
-    border: 4px solid #d69e00;
-    border-radius: 50%;
-    z-index: 5;
-}
-
-/* Obstacle */
-.obstacle {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    background: #202020;
-    border-radius: 8px;
-    z-index: 5;
-}
-
-/* Score */
-#score {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
-    z-index: 20;
-}
-
-/* Menu */
-#menu {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,.7);
-    color: white;
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-#menu h1 {
-    font-size: 42px;
-    margin-bottom: 10px;
-}
-
-#menu button {
-    padding: 15px 45px;
-    border: 0;
-    border-radius: 15px;
-    font-size: 22px;
-    background: orange;
-}
-
-/* Controls */
-#controls {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    z-index: 30;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.control {
-    width: 70px;
-    height: 55px;
-    border: 0;
-    border-radius: 15px;
-    font-size: 25px;
-    background: rgba(255,255,255,.8);
+#start h1{font-size:40px}
+#start button{
+ width:180px;background:#20c957;color:white;
+ font-size:20px
 }
 </style>
 </head>
 
 <body>
 
-<div id="game">
+<div id="game"></div>
 
-    <div id="road">
-        <div class="laneLine line1"></div>
-        <div class="laneLine line2"></div>
-    </div>
+<div id="score">Score: 0</div>
 
-    <div id="score">Score: 0</div>
-
-    <div id="player"></div>
-
-    <div id="controls">
-        <button class="control" onclick="left()">⬅️</button>
-        <button class="control" onclick="jump()">⬆️</button>
-        <button class="control" onclick="right()">➡️</button>
-    </div>
-
-    <div id="menu">
-        <h1>🏃 Runner Dash</h1>
-        <p>Coins collect karo aur obstacles se bacho!</p>
-        <button onclick="startGame()">START GAME</button>
-    </div>
-
+<div id="buttons">
+<button onclick="moveLeft()">⬅️</button>
+<button onclick="jump()">⬆️</button>
+<button onclick="moveRight()">➡️</button>
 </div>
+
+<div id="start">
+<h1>🏃 3D RUNNER</h1>
+<p>Swipe ya buttons se move karein</p>
+<button onclick="startGame()">START</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
 
-let lane = 1;
-let score = 0;
-let speed = 6;
-let running = false;
-let jumping = false;
+let scene,camera,renderer;
+let player;
+let lane=0;
+let jumping=false;
+let playing=false;
+let score=0;
+let roadLines=[];
 
-const player = document.getElementById("player");
-const game = document.getElementById("game");
+const lanes=[-3,0,3];
 
-function positionPlayer() {
+function createGame(){
 
-    const positions = ["25%", "50%", "75%"];
+scene=new THREE.Scene();
 
-    player.style.left = positions[lane];
-}
+scene.background=new THREE.Color(0x87ceeb);
 
-function left() {
+camera=new THREE.PerspectiveCamera(
+60,
+innerWidth/innerHeight,
+0.1,
+1000
+);
 
-    if (!running) return;
+camera.position.set(0,4,8);
 
-    if (lane > 0) {
-        lane--;
-        positionPlayer();
-    }
-}
-
-function right() {
-
-    if (!running) return;
-
-    if (lane < 2) {
-        lane++;
-        positionPlayer();
-    }
-}
-
-function jump() {
-
-    if (!running || jumping) return;
-
-    jumping = true;
-
-    player.style.bottom = "230px";
-
-    setTimeout(() => {
-
-        player.style.bottom = "100px";
-        jumping = false;
-
-    }, 600);
-}
-
-function createCoin() {
-
-    if (!running) return;
-
-    const coin = document.createElement("div");
-
-    coin.className = "coin";
-
-    const positions = ["25%", "50%", "75%"];
-
-    coin.style.left =
-        positions[Math.floor(Math.random() * 3)];
-
-    coin.style.top = "-40px";
-
-    game.appendChild(coin);
-
-    let y = -40;
-
-    const timer = setInterval(() => {
-
-        if (!running) {
-            clearInterval(timer);
-            coin.remove();
-            return;
-        }
-
-        y += speed;
-
-        coin.style.top = y + "px";
-
-        if (y > innerHeight) {
-
-            clearInterval(timer);
-            coin.remove();
-        }
-
-        const p =
-            player.getBoundingClientRect();
-
-        const c =
-            coin.getBoundingClientRect();
-
-        if (
-            p.left < c.right &&
-            p.right > c.left &&
-            p.top < c.bottom &&
-            p.bottom > c.top
-        ) {
-
-            score += 10;
-
-            document.getElementById("score")
-                .innerText = "Score: " + score;
-
-            clearInterval(timer);
-            coin.remove();
-        }
-
-    }, 30);
-}
-
-function createObstacle() {
-
-    if (!running) return;
-
-    const obstacle =
-        document.createElement("div");
-
-    obstacle.className = "obstacle";
-
-    const positions =
-        ["25%", "50%", "75%"];
-
-    obstacle.style.left =
-        positions[Math.floor(Math.random() * 3)];
-
-    obstacle.style.top = "-60px";
-
-    game.appendChild(obstacle);
-
-    let y = -60;
-
-    const timer = setInterval(() => {
-
-        if (!running) {
-
-            clearInterval(timer);
-            obstacle.remove();
-            return;
-        }
-
-        y += speed;
-
-        obstacle.style.top = y + "px";
-
-        if (y > innerHeight) {
-
-            clearInterval(timer);
-            obstacle.remove();
-        }
-
-        const p =
-            player.getBoundingClientRect();
-
-        const o =
-            obstacle.getBoundingClientRect();
-
-        if (
-            p.left < o.right &&
-            p.right > o.left &&
-            p.top < o.bottom &&
-            p.bottom > o.top &&
-            !jumping
-        ) {
-
-            gameOver();
-
-            clearInterval(timer);
-        }
-
-    }, 30);
-}
-
-function startGame() {
-
-    running = true;
-
-    score = 0;
-    lane = 1;
-    speed = 6;
-
-    positionPlayer();
-
-    document.getElementById("score")
-        .innerText = "Score: 0";
-
-    document.getElementById("menu")
-        .style.display = "none";
-
-    setInterval(createCoin, 700);
-    setInterval(createObstacle, 1100);
-
-    setInterval(() => {
-
-        if (running && speed < 14) {
-            speed += .2;
-        }
-
-    }, 3000);
-}
-
-function gameOver() {
-
-    running = false;
-
-    document.getElementById("menu")
-        .style.display = "flex";
-
-    document.querySelector("#menu h1")
-        .innerText = "💥 Game Over";
-
-    document.querySelector("#menu p")
-        .innerText =
-        "Your Score: " + score;
-
-    document.querySelector("#menu button")
-        .innerText = "PLAY AGAIN";
-}
-
-/* Keyboard */
-
-document.addEventListener("keydown", e => {
-
-    if (e.key === "ArrowLeft") left();
-
-    if (e.key === "ArrowRight") right();
-
-    if (e.key === "ArrowUp" ||
-        e.key === " ") jump();
-
+renderer=new THREE.WebGLRenderer({
+antialias:true
 });
 
-/* Swipe */
+renderer.setSize(innerWidth,innerHeight);
 
-let startX = 0;
-let startY = 0;
+document.getElementById("game")
+.appendChild(renderer.domElement);
 
-document.addEventListener("touchstart", e => {
+/* Light */
 
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
+const light=new THREE.HemisphereLight(
+0xffffff,
+0x555555,
+1.5
+);
 
+scene.add(light);
+
+/* Road */
+
+const roadGeometry=
+new THREE.BoxGeometry(12,.2,200);
+
+const roadMaterial=
+new THREE.MeshStandardMaterial({
+color:0x333333
 });
 
-document.addEventListener("touchend", e => {
+const road=
+new THREE.Mesh(
+roadGeometry,
+roadMaterial
+);
 
-    const endX = e.changedTouches[0].clientX;
-    const endY = e.changedTouches[0].clientY;
+road.position.z=-70;
 
-    const dx = endX - startX;
-    const dy = endY - startY;
+scene.add(road);
 
-    if (Math.abs(dx) > Math.abs(dy)) {
+/* Lane lines */
 
-        if (dx > 40) right();
-        if (dx < -40) left();
+for(let x of [-2,2]){
 
-    } else {
+for(let z=0;z>-180;z-=8){
 
-        if (dy < -40) jump();
+const geo=
+new THREE.BoxGeometry(.12,.03,4);
 
-    }
-
+const mat=
+new THREE.MeshBasicMaterial({
+color:0xffffff
 });
 
-positionPlayer();
+const line=
+new THREE.Mesh(geo,mat);
+
+line.position.set(x,.13,z);
+
+scene.add(line);
+
+roadLines.push(line);
+
+}
+}
+
+/* Player */
+
+const body=
+new THREE.Mesh(
+new THREE.BoxGeometry(1.2,2,1),
+new THREE.MeshStandardMaterial({
+color:0xe63946
+})
+);
+
+body.position.set(0,1.1,3);
+
+scene.add(body);
+
+player=body;
+
+animate();
+}
+
+function moveLeft(){
+
+if(!playing)return;
+
+if(lane>-1){
+lane--;
+player.position.x=lanes[lane+1];
+}
+}
+
+function moveRight(){
+
+if(!playing)return;
+
+if(lane<1){
+lane++;
+player.position.x=lanes[lane+1];
+}
+}
+
+function jump(){
+
+if(!playing||jumping)return;
+
+jumping=true;
+
+let startY=1.1;
+let t=0;
+
+function jumpAnimation(){
+
+t+=0.08;
+
+player.position.y=
+startY+Math.sin(t*Math.PI)*3;
+
+if(t<1){
+
+requestAnimationFrame(jumpAnimation);
+
+}else{
+
+player.position.y=startY;
+jumping=false;
+
+}
+
+}
+
+jumpAnimation();
+}
+
+function startGame(){
+
+playing=true;
+score=0;
+
+document.getElementById("score")
+.innerText="Score: 0";
+
+document.getElementById("start")
+.style.display="none";
+}
+
+function animate(){
+
+requestAnimationFrame(animate);
+
+if(playing){
+
+score+=0.05;
+
+document.getElementById("score")
+.innerText=
+"Score: "+Math.floor(score);
+
+/* Moving road */
+
+for(let line of roadLines){
+
+line.position.z+=0.5;
+
+if(line.position.z>10){
+line.position.z=-180;
+}
+
+}
+
+}
+
+camera.lookAt(
+player.position.x,
+1,
+-10
+);
+
+renderer.render(scene,camera);
+}
+
+window.addEventListener(
+"resize",
+()=>{
+camera.aspect=innerWidth/innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(innerWidth,innerHeight);
+}
+);
+
+let sx=0;
+
+document.addEventListener(
+"touchstart",
+e=>{
+sx=e.touches[0].clientX;
+}
+);
+
+document.addEventListener(
+"touchend",
+e=>{
+
+let ex=e.changedTouches[0].clientX;
+let dx=ex-sx;
+
+if(Math.abs(dx)>50){
+
+if(dx>0)moveRight();
+else moveLeft();
+
+}
+
+}
+);
+
+document.addEventListener(
+"keydown",
+e=>{
+
+if(e.key==="ArrowLeft")moveLeft();
+if(e.key==="ArrowRight")moveRight();
+if(e.key==="ArrowUp")jump();
+
+}
+);
+
+createGame();
 
 </script>
 
